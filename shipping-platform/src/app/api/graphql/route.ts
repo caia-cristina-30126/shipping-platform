@@ -13,5 +13,5 @@ const handler = startServerAndCreateNextHandler(server, {
   context: async () => createContext(),
 })
 
-export { handler as GET, handler as POST }; // GraphQL needs both
+export { handler as GET, handler as POST }; 
 
