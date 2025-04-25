@@ -1,2 +1,2 @@
-export {OrdersPage} from './OrdersPage'
+export {NewProductPage} from './OrdersPage'
 export {ProductsPage} from './ProductsPage'

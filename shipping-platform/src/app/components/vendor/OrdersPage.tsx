@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -10,15 +11,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { CREATE_PRODUCT } from "@/graphql/operations/product";
+import graphQLClient from "@/lib/apolloClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const OrdersPage = () => {
+export const NewProductPage = () => {
   const formSchema = z.object({
     name: z.string(),
-    description: z.string().nullable(),
-    quantity: z.number(),
+    description: z.string().optional(),
+    quantity: z.coerce.number(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -30,14 +33,30 @@ export const OrdersPage = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("save order");
-    console.log("values", values);
-  };
+const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  console.log("values", values)
+  try {
+    const { data } = await graphQLClient.mutate({
+      mutation: CREATE_PRODUCT,
+      variables: {
+      
+          name: values.name,
+          description: values.description,
+          quantity: values.quantity,
+       
+      },
+    })
+
+    console.log('Product created:', data.createProduct)
+    form.reset() 
+  } catch (error) {
+    console.error('Error creating product:', error)
+  }
+}
 
   return (
-    <>
-      Create your Orders
+    <Card className="max-w-lg mx-auto">
+      Create your Product
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -47,9 +66,34 @@ export const OrdersPage = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Set a name for your product..." {...field} />
                 </FormControl>
-                <FormDescription>This is your order name.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+             <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Input placeholder="Set a description for your product..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+            <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input  {...field} type='number' />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -57,6 +101,6 @@ export const OrdersPage = () => {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
-    </>
+    </Card>
   );
 };

@@ -1,6 +1,6 @@
 
-import { OrdersPage } from "@/app/components/vendor";
+import { NewProductPage } from "@/app/components/vendor";
 
 export default function Page() {
-  return <OrdersPage />;
+  return <NewProductPage />;
 }
