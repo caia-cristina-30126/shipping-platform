@@ -14,7 +14,7 @@ export const gqlQuery = async <T>(query: DocumentNode, variables?: object) => {
   }
 }
 
-export const gqlMutation = async <T>(mutation: DocumentNode, variables?: object) => {
+export const gqlCreateMutation = async <T>(mutation: DocumentNode, variables?: object) => {
   try {
     const { data } = await graphQLClient.mutate<T>({
       mutation,

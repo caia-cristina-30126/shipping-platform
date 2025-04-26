@@ -19,17 +19,15 @@ export const CREATE_PRODUCT = gql`
   ) {
     createProduct(
       name: $name
-       description: $description
-    quantity: $quantity
+      description: $description
+      quantity: $quantity
     ) {
-      
-        id
-        name
-        description
-        quantity
-      
+      id
+      name
+      description
+      quantity
     }
   }
-`;
+`
 
 
