@@ -1,10 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
-import { GET_PRODUCTS } from '@/graphql/operations/product'
-import graphQLClient from '@/lib/apolloClient'
 import { Card, CardContent } from '@/components/ui/card'
+import { GET_PRODUCTS } from '@/graphql/operations/product'
+import { gqlQuery } from '@/lib/api'
 
 type Product = {
   id: string
@@ -19,10 +18,8 @@ export const ProductsPage =() => {
   useEffect(() => {
   const fetchData = async () => {
       try {
-        const { data } = await graphQLClient.query({
-         query: GET_PRODUCTS,
-        })
-        setProducts(data.products)
+        const data = await gqlQuery<{ products: Product[] }>(GET_PRODUCTS)
+      setProducts(data.products)
       } catch (error) {
         console.error('Error fetching products:', error)
       }

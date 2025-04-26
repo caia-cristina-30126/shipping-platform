@@ -4,18 +4,26 @@ import { Card } from "@/components/ui/card";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CREATE_PRODUCT } from "@/graphql/operations/product";
-import graphQLClient from "@/lib/apolloClient";
+import { gqlCreateMutation } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+type CreateProductResponse = {
+  createProduct: {
+    id: number
+    name: string
+    description?: string
+    quantity: number
+  }
+}
 
 export const NewProductPage = () => {
   const formSchema = z.object({
@@ -36,18 +44,15 @@ export const NewProductPage = () => {
 const onSubmit = async (values: z.infer<typeof formSchema>) => {
   console.log("values", values)
   try {
-    const { data } = await graphQLClient.mutate({
-      mutation: CREATE_PRODUCT,
-      variables: {
-      
-          name: values.name,
-          description: values.description,
-          quantity: values.quantity,
-       
-      },
+   const data = await gqlCreateMutation<CreateProductResponse>(CREATE_PRODUCT, {
+ 
+        name: values.name,
+        description: values.description,
+        quantity: values.quantity,
+    
     })
 
-    console.log('Product created:', data.createProduct)
+    console.log('Product created:', data?.createProduct)
     form.reset() 
   } catch (error) {
     console.error('Error creating product:', error)
