@@ -6,6 +6,7 @@ export const Product = objectType({
     t.nonNull.int('id')
     t.nonNull.string('name')
     t.string('description')
+    t.string('image')
     t.nonNull.int('quantity')
   },
 })

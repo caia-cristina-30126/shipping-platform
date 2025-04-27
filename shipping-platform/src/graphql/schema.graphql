@@ -3,12 +3,13 @@
 
 
 type Mutation {
-  createProduct(name: String!, quantity: Int!): Product
+  createProduct(description: String, name: String!, quantity: Int!): Product
 }
 
 type Product {
   description: String
   id: Int!
+  image: String
   name: String!
   quantity: Int!
 }
