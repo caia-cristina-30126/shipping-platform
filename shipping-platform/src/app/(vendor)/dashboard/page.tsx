@@ -1,6 +1,5 @@
-
-import { NewProductPage } from "@/app/components/vendor";
+import { DashboardWelcome } from "@/app/components/vendor/DashboardWelcome"
 
 export default function Page() {
-  return <NewProductPage />;
+  return <DashboardWelcome />;
 }

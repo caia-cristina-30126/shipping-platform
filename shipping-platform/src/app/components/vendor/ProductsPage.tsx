@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { CustomCard } from "@/app/components/ui/common/CustomCard"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -195,20 +195,18 @@ export const ProductsPage = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filteredProducts?.map((product) => (
-          <Card key={product.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="text-lg">{product.name}</CardTitle>
-              <CardDescription>
-                {product.description || 'No description available'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Quantity:</span>
-                <span className="font-semibold">{product.quantity}</span>
-              </div>
-            </CardContent>
-          </Card>
+          <CustomCard
+            key={product.id}
+            title={product.name}
+            description={product.description || 'No description available'}
+            className="hover:shadow-lg transition-shadow"
+            titleClassName="text-lg"
+          >
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Quantity:</span>
+              <span className="font-semibold">{product.quantity}</span>
+            </div>
+          </CustomCard>
         ))}
         {filteredProducts?.length === 0 && (
           <div className="col-span-full text-center py-8">
