@@ -5,8 +5,8 @@ export const Product = objectType({
   definition(t) {
     t.nonNull.int('id')
     t.nonNull.string('name')
+    t.nonNull.int('quantity')
     t.string('description')
     t.string('image')
-    t.nonNull.int('quantity')
   },
 })

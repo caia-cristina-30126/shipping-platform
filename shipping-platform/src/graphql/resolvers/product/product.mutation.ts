@@ -9,14 +9,16 @@ export const AlertMutation = extendType({
       args: {
         name: nonNull(stringArg()),
         quantity: nonNull(intArg()),
-        description: stringArg()
+        description: stringArg(),
+        image: stringArg()
       },
-      resolve: async (_parent, {name, quantity, description}, ctx) => {
+      resolve: async (_parent, {name, quantity, description, image}, ctx) => {
         const product = await ctx.prisma.product.create({
          data: {
             name,
             quantity,
-            description
+            description,
+            image
          }
         })
 
