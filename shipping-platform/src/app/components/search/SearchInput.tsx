@@ -1,25 +1,28 @@
-"use client"
-import { Input } from "@/components/ui/input"
-import { useRouter } from 'next/navigation'
-import { useState } from "react"
+"use client";
+import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { CustomButton } from "../common/CustomButton";
 
 export const SearchInput = () => {
-    const router = useRouter()
-    const [searchQuery, setSearchQuery] = useState('')
+    const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState("");
 
-    const handleSubmit = (e: any) => {
-        if (e.key === "Enter") {
-            if (searchQuery) return router.replace(`/dashboard/products?q=${searchQuery}`);
+    const handleSubmit = () => {
+        if (!searchQuery) return router.replace(`/dashboard/products`);;
 
-            if (!searchQuery) return router.replace("/")
-        }
-    }
+        return router.replace(`/dashboard/products?q=${searchQuery}`);
+    };
 
-    return <Input
-        placeholder="Search products..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        onKeyDown={(e) => handleSubmit(e)}
-        className="max-w-sm"
-    />
-}
+    return (
+        <div className="flex justify-between items-center mb-6 max-w-lg">
+            <Input
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="max-w-sm"
+            />
+            <CustomButton text={"Search"} onClick={() => handleSubmit()} />
+        </div>
+    );
+};
