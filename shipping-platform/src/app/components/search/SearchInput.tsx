@@ -15,7 +15,7 @@ export const SearchInput = () => {
     };
 
     return (
-        <div className="flex justify-between items-center mb-6 max-w-lg">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 max-w-lg gap-2">
             <Input
                 placeholder="Search products..."
                 value={searchQuery}
