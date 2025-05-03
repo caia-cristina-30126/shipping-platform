@@ -2,7 +2,7 @@ import { prisma } from "@/context"
 import Link from "next/link"
 
 
-export default async function ProductDetailsPage({
+export default async function Page({
     params,
 }: {
     params: Promise<{ productId: string }>

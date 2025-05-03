@@ -28,7 +28,7 @@ interface Props {
   };
 }
 
-export default async function ProductsPage({ filters }: Props) {
+export const ProductsPage = async ({ filters }: Props) => {
   const products = await prisma.product.findMany({
     where: { name: { contains: filters.q as string } },
   });

@@ -30,3 +30,22 @@ console.error(e);
     };
    }
 }
+
+export async function getProducts() {
+    try {
+        const products = await prisma.product.findMany({
+            select: {
+                id: true,
+                name: true,
+                quantity: true,
+            },
+        });
+        return { success: true, data: products };
+    } catch (error) {
+        console.error('Failed to fetch products:', error);
+        return { 
+            success: false, 
+            error: 'Failed to fetch products' 
+        };
+    }
+}

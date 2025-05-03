@@ -45,6 +45,7 @@ export const AddProductForm = () => {
     };
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
     return (
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
