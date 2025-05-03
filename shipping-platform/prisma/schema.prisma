@@ -14,6 +14,17 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum OrderStatus {
+  pending
+  confirmed
+  assigned
+  shipped
+  delivered
+  cancelled
+  returned
+  failed
+}
+
 model Product {
   id          Int      @id @default(autoincrement())
   name        String
@@ -22,4 +33,26 @@ model Product {
   image       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  orderItems OrderItem[]
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  status    OrderStatus @default(pending)
+
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id       Int @id @default(autoincrement())
+  quantity Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  order   Order @relation(fields: [orderId], references: [id])
+  orderId Int
 }

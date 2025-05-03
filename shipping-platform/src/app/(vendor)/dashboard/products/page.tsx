@@ -1,4 +1,4 @@
-import ProductsPage from "@/app/components/vendor/ProductsPage"
+import { ProductsPage } from "@/app/components/vendor/ProductsPage"
 
 export default async function Page({
   params,
