@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { getSession } from 'next-auth/react';
 
 export default async function Home() {
 
