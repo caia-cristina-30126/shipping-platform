@@ -1,5 +1,6 @@
-import { DashboardWelcome } from "@/app/components/vendor/DashboardWelcome"
+import { DashboardWelcome } from "@/app/components/vendor/DashboardWelcome";
 
-export default function Page() {
+export default async function Page() {
+
   return <DashboardWelcome />;
 }
