@@ -11,6 +11,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {strategy: 'jwt',
     maxAge: 5 * 24 * 60 * 60 // 5 days in seconds
   },
+  pages: {
+    signIn: "/signin",
+    signOut:'/signout'
+  },
   providers: [GoogleProvider({
     clientId: process.env.AUTH_GOOGLE_ID,
     clientSecret: process.env.AUTH_GOOGLE_SECRET
