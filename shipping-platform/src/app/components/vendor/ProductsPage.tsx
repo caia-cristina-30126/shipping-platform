@@ -1,9 +1,7 @@
 import { CustomCard } from "@/app/components/ui/common/CustomCard";
 import { prisma } from "@/context";
-import { z } from "zod";
-import { SearchInput } from "../search/SearchInput";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { SearchInput } from "../search/SearchInput";
 import { AddProductForm } from "./AddProductForm";
 
 type Product = {
@@ -43,7 +41,6 @@ export const ProductsPage = async ({ filters }: Props) => {
       <div className="mb-4">
         <SearchInput />
       </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {products?.map((product) => (
           <CustomCard
@@ -59,6 +56,9 @@ export const ProductsPage = async ({ filters }: Props) => {
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Quantity:</span>
               <span className="font-semibold">{product.quantity}</span>
+              {product.image && <img src={product.image} alt={product.name} width={70}
+                height={70} />}
+
             </div>
           </CustomCard>
         ))}

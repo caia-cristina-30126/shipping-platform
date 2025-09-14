@@ -18,12 +18,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ProductSchema, productSchema } from "@/lib/validation/product";
+import { createClient } from "@/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+
 export const AddProductForm = () => {
+    const [imageURL, setImageURL] = useState<string | undefined>(undefined)
+    const [imageFile, setImageFile] = useState<File | undefined>(undefined)
     const form = useForm<z.infer<typeof productSchema>>({
         resolver: zodResolver(productSchema),
         defaultValues: {
@@ -34,15 +38,22 @@ export const AddProductForm = () => {
     });
 
     const onSubmit = async (data: ProductSchema) => {
-        const result = await createProduct(data);
 
+        data.image = imageURL
+        const result = await createProduct(data);
+        const supabase = createClient();
+        if (imageURL && imageFile) { await supabase.storage.from('test').upload(imageURL, imageFile) }
         if (!result.success) {
             console.error(result.errors);
             return;
         }
 
+        setIsAddDialogOpen(false)
+        setImageURL(undefined)
         form.reset();
+
     };
+
 
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -96,6 +107,34 @@ export const AddProductForm = () => {
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="image"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Image</FormLabel>
+                                    <FormControl>
+                                        <Input type="file" id="single" accept="image/*" {...field} onChange={(event) => {
+
+                                            if (!event.target.files || event.target.files.length === 0) {
+                                                return
+                                            }
+
+                                            const file = event.target.files[0]
+                                            const fileExt = file.name.split('.').pop()
+                                            const filePath = `test-${Math.random()}.${fileExt}`
+
+                                            setImageURL(filePath)
+                                            setImageFile(file)
+
+                                        }}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
                         <Button type="submit" className="w-full">
                             Add Product
                         </Button>
