@@ -10,7 +10,7 @@ const providers: Provider[] = [
   GoogleProvider({
     clientId: process.env.AUTH_GOOGLE_ID!,
     clientSecret: process.env.AUTH_GOOGLE_SECRET!,
-    allowDangerousEmailAccountLinking: true 
+    allowDangerousEmailAccountLinking: true
   }),
   FacebookProvider({
     clientId: process.env.AUTH_FACEBOOK_ID!,
@@ -23,27 +23,46 @@ export const providerMap = providers
   .map((provider) => {
     if (typeof provider === "function") {
       const providerData = provider()
-      return { id: providerData.id, name: providerData.name}
+      return { id: providerData.id, name: providerData.name }
     } else {
-      return { id: provider.id, name: provider.name}
+      return { id: provider.id, name: provider.name }
     }
   })
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  session: {strategy: 'jwt',
+  session: {
+    strategy: 'jwt',
     maxAge: 5 * 24 * 60 * 60 // 5 days in seconds
   },
   pages: {
     signIn: "/signin",
-    signOut:'/signout'
+    signOut: '/signout'
   },
   providers,
   callbacks: {
-    authorized: async ({ auth }) => {
-      console.log("auth in callbacks", auth)
+    async jwt({ token, user }) {
+      // Persist the user id to the token
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Expose the id on the session
+      if (session.user) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    },
+
+    async authorized({ auth }) {
+      console.log("auth user id in callbacks", auth?.user?.id)
+
       // Logged in users are authenticated, otherwise redirect to login page
       return !!auth
     },
+
+
   },
 })

@@ -3,6 +3,7 @@ import { prisma } from "@/context";
 import Link from "next/link";
 import { SearchInput } from "../search/SearchInput";
 import { AddProductForm } from "./AddProductForm";
+import { auth } from "@/auth";
 
 type Product = {
   id: string;
@@ -27,9 +28,12 @@ interface Props {
 }
 
 export const ProductsPage = async ({ filters }: Props) => {
+  const session = await auth();
   const products = await prisma.product.findMany({
-    where: { name: { contains: filters.q as string } },
+    where: { userId: session?.user?.id },
   });
+  console.log("user id", session)
+  console.log("products", products)
 
   return (
     <div className="container mx-auto py-6 px-2 sm:px-4">
