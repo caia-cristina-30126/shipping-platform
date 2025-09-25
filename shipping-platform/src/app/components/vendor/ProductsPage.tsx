@@ -30,7 +30,7 @@ interface Props {
 export const ProductsPage = async ({ filters }: Props) => {
   const session = await auth();
   const products = await prisma.product.findMany({
-    where: { userId: session?.user?.id },
+    where: { name: { contains: filters.q as string }, userId: session?.user?.id },
   });
   console.log("user id", session)
   console.log("products", products)

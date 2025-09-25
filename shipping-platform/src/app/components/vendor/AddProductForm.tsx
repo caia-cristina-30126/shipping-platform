@@ -42,7 +42,7 @@ export const AddProductForm = () => {
         data.image = imageURL
         const result = await createProduct(data);
         const supabase = createClient();
-        if (imageURL && imageFile) { await supabase.storage.from('test').upload(imageURL, imageFile) }
+        if (result.success && imageURL && imageFile) { await supabase.storage.from('test').upload(`product_${result.productId}/${imageURL}`, imageFile) }
         if (!result.success) {
             console.error(result.errors);
             return;
