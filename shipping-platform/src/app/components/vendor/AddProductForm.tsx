@@ -26,8 +26,10 @@ import { z } from "zod";
 
 
 export const AddProductForm = () => {
-    const [imageURL, setImageURL] = useState<string | undefined>(undefined)
-    const [imageFile, setImageFile] = useState<File | undefined>(undefined)
+    const [imagesURL, setImagesURL] = useState<string[] | undefined>(undefined)
+    const [imagesFile, setImagesFile] = useState<File[] | undefined>(undefined)
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+
     const form = useForm<z.infer<typeof productSchema>>({
         resolver: zodResolver(productSchema),
         defaultValues: {
@@ -39,17 +41,27 @@ export const AddProductForm = () => {
 
     const onSubmit = async (data: ProductSchema) => {
 
-        data.image = imageURL
+        data.images = imagesURL
         const result = await createProduct(data);
         const supabase = createClient();
-        if (result.success && imageURL && imageFile) { await supabase.storage.from('test').upload(`product_${result.productId}/${imageURL}`, imageFile) }
+        if (result.success && imagesURL && imagesFile) {
+            await Promise.all(
+                imagesURL.map((imageURL, idx) =>
+                    supabase.storage
+                        .from("test")
+                        .upload(`product_${result.productId}/${imageURL}`, imagesFile[idx], {
+                            upsert: true,
+                        })
+                )
+            );
+        }
         if (!result.success) {
             console.error(result.errors);
             return;
         }
 
         setIsAddDialogOpen(false)
-        setImageURL(undefined)
+        setImagesURL(undefined)
         form.reset();
 
     };
@@ -109,23 +121,35 @@ export const AddProductForm = () => {
                         />
                         <FormField
                             control={form.control}
-                            name="image"
+                            name="images"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Image</FormLabel>
+                                    <FormLabel>Images</FormLabel>
                                     <FormControl>
-                                        <Input type="file" id="single" accept="image/*" {...field} onChange={(event) => {
+                                        <Input type="file" id="multiple" accept="image/*" multiple {...field} onChange={(event) => {
 
                                             if (!event.target.files || event.target.files.length === 0) {
                                                 return
                                             }
 
-                                            const file = event.target.files[0]
-                                            const fileExt = file.name.split('.').pop()
-                                            const filePath = `test-${Math.random()}.${fileExt}`
+                                            const files = Array.from(event.target.files);
+                                            const previews = files.map((file) => URL.createObjectURL(file));
+                                            setPreviewUrls(previews);
+                                            // const file = event.target.files[0]
+                                            // const fileExt = file.name.split('.').pop()
+                                            // const filePath = `test-${Math.random()}.${fileExt}`
 
-                                            setImageURL(filePath)
-                                            setImageFile(file)
+                                            // setImagesURL(filePath)
+                                            // setImagesFile(file)
+
+                                            const filePaths = files.map((file) => {
+                                                const fileExt = file.name.split(".").pop();
+                                                return `test-${Math.random()}.${fileExt}`;
+                                            });
+
+
+                                            setImagesFile(files);
+                                            setImagesURL(filePaths);
 
                                         }}
                                         />
@@ -134,6 +158,16 @@ export const AddProductForm = () => {
                                 </FormItem>
                             )}
                         />
+                        <div className="flex gap-2 mt-3 flex-wrap">
+                            {previewUrls.map((url, id) => (
+                                <img
+                                    key={id}
+                                    src={url}
+                                    alt={`Preview ${id + 1}`}
+                                    className="w-24 h-24 object-cover rounded-md border"
+                                />
+                            ))}
+                        </div>
 
                         <Button type="submit" className="w-full">
                             Add Product

@@ -21,17 +21,20 @@ export async function createProduct(formData: unknown) {
       errors: result.error.flatten().fieldErrors,
     };
   }
-  const imagePath = result.data.image
-  let product
+  let imagesPath: string[] = []
+  result.data.images?.forEach((image) => imagesPath.push(image))
+  let product: any
   try {
     product = await prisma.product.create({
       data: { ...result.data, userId: session.user.id }
     })
-    if (imagePath) {
+    if (result.data.images) {
+      let imagesURL: string[] = []
+      result.data.images.forEach((image) => imagesURL.push(supabase.storage.from("test").getPublicUrl(`product_${product.id}/${image}`).data.publicUrl));
       await prisma.product.update({
         where: { id: product.id },
         data: {
-          image: supabase.storage.from("test").getPublicUrl(`product_${product.id}/${imagePath}`).data.publicUrl
+          images: imagesURL
         },
       })
     }

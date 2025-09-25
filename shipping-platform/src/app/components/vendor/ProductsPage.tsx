@@ -60,9 +60,8 @@ export const ProductsPage = async ({ filters }: Props) => {
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Quantity:</span>
               <span className="font-semibold">{product.quantity}</span>
-              {product.image && <img src={product.image} alt={product.name} width={70}
-                height={70} />}
-
+              {product.images.length > 0 && product.images.map((image) => <img key={image} src={image} alt={product.name} width={70}
+                height={70} />)}
             </div>
           </CustomCard>
         ))}
