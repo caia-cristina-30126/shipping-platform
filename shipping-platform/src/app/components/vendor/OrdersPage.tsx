@@ -10,6 +10,7 @@ import { prisma } from "@/context"
 import { format } from "date-fns"
 import { Order, OrderItem, Product } from "@prisma/client"
 import { AddOrderForm } from "./AddOrderForm"
+import { auth } from "@/auth"
 
 type OrderWithItems = Order & {
     orderItems: (OrderItem & {
@@ -18,6 +19,8 @@ type OrderWithItems = Order & {
 }
 
 export const OrdersPage = async () => {
+    const session = await auth();
+    const user = session?.user
     const orders = await prisma.order.findMany({
         include: {
             orderItems: {
@@ -32,7 +35,7 @@ export const OrdersPage = async () => {
         <div className="container mx-auto py-6 px-2 sm:px-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <h1 className="text-2xl font-bold">Orders</h1>
-                <AddOrderForm />
+                {user && <AddOrderForm user={user} />}
             </div>
 
             <Table>

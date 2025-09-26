@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/context";
 import { productSchema } from "@/lib/validation/product";
 import { createClient } from "@/supabase/client";
+import { User } from "next-auth";
 import { revalidatePath } from "next/cache";
 
 export async function createProduct(formData: unknown) {
@@ -55,14 +56,14 @@ export async function createProduct(formData: unknown) {
   }
 }
 
-export async function getProducts() {
+export async function getProducts(user: User) {
   try {
     const products = await prisma.product.findMany({
       select: {
         id: true,
         name: true,
         quantity: true,
-      },
+      }, where: { userId: user.id }
     });
     return { success: true, data: products };
   } catch (error) {

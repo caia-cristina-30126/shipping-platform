@@ -25,6 +25,8 @@ import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { auth } from "@/auth";
+import { User } from "next-auth";
 
 type Product = {
     id: number;
@@ -32,7 +34,11 @@ type Product = {
     quantity: number;
 };
 
-export const AddOrderForm = () => {
+interface Props {
+    user: User
+}
+
+export const AddOrderForm = ({ user }: Props) => {
     const [products, setProducts] = useState<Product[]>([]);
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -75,7 +81,7 @@ export const AddOrderForm = () => {
     const handleDialogOpen = async (open: boolean) => {
         setIsAddDialogOpen(open);
         if (open) {
-            const result = await getProducts();
+            const result = await getProducts(user);
             if (result.success && result.data) {
                 setProducts(result.data);
             } else {
