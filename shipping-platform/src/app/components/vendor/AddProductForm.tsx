@@ -46,12 +46,10 @@ export const AddProductForm = () => {
         const supabase = createClient();
         if (result.success && imagesURL && imagesFile) {
             await Promise.all(
-                imagesURL.map((imageURL, idx) =>
+                imagesURL.map((imageURL, id) =>
                     supabase.storage
                         .from("test")
-                        .upload(`product_${result.productId}/${imageURL}`, imagesFile[idx], {
-                            upsert: true,
-                        })
+                        .upload(`product_${result.productId}/${imageURL}`, imagesFile[id])
                 )
             );
         }
